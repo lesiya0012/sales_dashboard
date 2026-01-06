@@ -4,6 +4,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 const saleRoutes = require('./modules/sales/sale.route')
+const companyRoutes = require('./modules/company/company.route');
 const errorHandler = require('./middleware/error');
 
 const app = express();
@@ -12,6 +13,8 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 app.use('/api/sales', saleRoutes);
+app.use("/api/company", companyRoutes);
+
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 app.use(errorHandler);
 

@@ -53,17 +53,31 @@ exports.create = async (req, res) => {
 };
 
 // ✅ List sales with pagination
+// ✅ List sales with pagination (4 per page)
 exports.list = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = 10;
+    const limit = 3; // 👈 EXACTLY like the image
     const skip = (page - 1) * limit;
-    const sales = await Sale.find().sort('-createdAt').skip(skip).limit(limit);
-    res.json(sales);
+
+    const [sales, total] = await Promise.all([
+      Sale.find()
+        .sort({ saleDate: -1 }) // newest first (like image)
+        .skip(skip)
+        .limit(limit),
+      Sale.countDocuments(),
+    ]);
+
+    res.json({
+      data: sales,
+      page,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // ✅ Get single sale
 exports.getOne = async (req, res) => {
