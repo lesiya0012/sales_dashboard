@@ -6,7 +6,7 @@ router.post('/', validate(ctrl.schemas.saleSchema), ctrl.create);
 router.get('/', ctrl.list);
 router.get('/:id', ctrl.getOne);
 router.patch('/:id', validate(ctrl.schemas.updateSchema), ctrl.update);
-router.delete('/:id', ctrl.remove);
+router.delete('/', ctrl.removeMany);
 
 
 module.exports = router;

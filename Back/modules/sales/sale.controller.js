@@ -102,15 +102,27 @@ exports.update = async (req, res) => {
 };
 
 // ✅ Delete sale
-exports.remove = async (req, res) => {
+exports.removeMany = async (req, res) => {
   try {
-    const sale = await Sale.findByIdAndDelete(req.params.id);
-    if (!sale) return res.status(404).json({ message: 'Sale not found' });
-    res.status(204).send();
+    const { ids } = req.body;
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: 'No IDs provided' });
+    }
+
+    const result = await Sale.deleteMany({
+      _id: { $in: ids }
+    });
+
+    res.json({
+      message: 'Sales deleted successfully',
+      deletedCount: result.deletedCount
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // ✅ Export schemas for validation middleware
 exports.schemas = { saleSchema, updateSchema };
